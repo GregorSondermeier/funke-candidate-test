@@ -1,0 +1,25 @@
+.row {
+	width: 100%;
+
+	&:after, &:before {
+		display: table;
+		content: "";
+		line-height: 0;
+	}
+
+	&:after {
+		clear: both;
+	}
+
+	[class*="col-"] {
+		display: block;
+		float: left;
+	}
+
+	.col-4 {
+		width: 33%;
+	}
+	.col-6 {
+		width: 50%;
+	}
+}

@@ -6,7 +6,73 @@
 </head>
 <body>
 
-<h1>Funke Candidate Test</h1>
+<div class="gs-header">
+	<div class="row">
+		<div class="col-4">
+			<h1>Telefonliste</h1>
+		</div>
+		<div class="col-4">
+			<label class="gs-filter-gender">Geschlecht:<br />
+				<select>
+					<option value="MALE">Männlich</option>
+					<option value="FEMALE">Weiblich</option>
+					<option value="">- Geschlecht wählen -</option>
+				</select>
+			</label>
+		</div>
+		<div class="col-4">
+			<label class="gs-filter-discrict">Stadtteil:<br />
+				<select>
+					<option value="">- Stadtteil wählen -</option>
+				</select>
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="gs-box">
+	<h3>Gefilterte Listen</h3>
+	<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+</div>
+
+<div class="row gs-lists">
+	<div class="col-6 gs-filtered-results">
+		<div class="gs-list-header">
+			<h3>Gefilterte Einträge</h3>
+		</div>
+		<table>
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Tel.</th>
+				<th>Stadt</th>
+				<th>Bezirk</th>
+			</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+	</div>
+	<div class="col-6 gs-remaining-results">
+		<div class="gs-list-header">
+			<h3>Weitere Einträge</h3>
+		</div>
+		<table>
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Tel.</th>
+				<th>Stadt</th>
+				<th>Bezirk</th>
+			</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+	</div>
+</div>
 
 <link rel="stylesheet" href="./css/style.css?<%- Date.now() %>" />
 <script

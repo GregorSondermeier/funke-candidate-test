@@ -1,0 +1,10 @@
+.gs-header {
+	height: 8 * $spacer;
+	background-color: $color-gainsboro;
+	color: #ffffff;
+
+	.gs-filter-gender, .gs-filter-discrict {
+		display: block;
+		margin-top: 2 * $spacer;
+	}
+}

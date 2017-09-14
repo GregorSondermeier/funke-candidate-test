@@ -1,0 +1,30 @@
+.gs-lists {
+
+	.col-6 {
+		width: calc(50% - #{3 * $spacer});
+		margin-right: 2 * $spacer;
+		margin-left: 2 * $spacer;
+
+		&:first-child {
+			margin-right: $spacer;
+		}
+		&:last-child {
+			margin-left: $spacer;
+		}
+	}
+
+	.gs-list-header {
+		color: $color-white;
+		background: $color-gainsboro;
+
+		h3 {
+			margin: 0;
+		}
+	}
+
+	table {
+		width: 100%;
+		text-align: left;
+		background: $color-dimgrey;
+	}
+}

@@ -80,4 +80,4 @@ gulp.task('scss:watch', function() {
 
 gulp.task('default', ['html', 'js', 'json', 'scss']);
 
-gulp.task('watch', ['html:watch', 'js:watch', 'json:watch', 'scss']);
+gulp.task('watch', ['html:watch', 'js:watch', 'json:watch', 'scss:watch']);
