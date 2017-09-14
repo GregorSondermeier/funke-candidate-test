@@ -4,7 +4,7 @@ namespace gs {
 			firstName: string,
 			lastName: string,
 			phone: string,
-			gender: 'MALE' | 'FEMALE',
+			gender: gs.contact.Gender,
 			city: string,
 			district: string
 		}

@@ -2,7 +2,7 @@ export class Contact implements gs.contact.IContact {
 	firstName: string;
 	lastName: string;
 	phone: string;
-	gender: 'MALE' | 'FEMALE';
+	gender: gs.contact.Gender;
 	city: string;
 	district: string;
 

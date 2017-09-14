@@ -1,68 +1,65 @@
+import * as $ from "jquery";
 import {Contact} from './_models/Contact';
 
-$().ready(() => {
+$(() => {
 	loadContacts();
-	registerFilters();
+	registerFilterHandlers();
 });
 
-/**
- * @type {Array<Contact>}
- */
-let contacts;
+let contacts: Array<Contact>;
 
-/**
- * @type {{gender: string, district: string}}
- */
-let searchcriteria = {
+let searchcriteria: gs.contact.IContactSearchcriteria = {
 	gender: null,
 	availableDistricts: [],
 	district: null
 };
 
-function loadContacts() {
+function loadContacts(): void {
 	$.ajax({
 		method: 'GET',
 		url: './json/contacts.json'
-	}).then(function(data) {
-		contacts = data.map(function(iContact) {
-			return new Contact(iContact);
-		});
+	}).then((data: Array<gs.contact.IContact>) => {
+		contacts = data.map((contact: gs.contact.IContact) => new Contact(contact));
 		sanitizeDiscrictFilter(contacts);
-		filterContacts(contacts);
+
+		let filteredContacts = filterContacts(contacts, searchcriteria);
+
+		addToTable('MATCHING', filteredContacts.matching);
+		addToTable('REMAINING', filteredContacts.remaining);
 	});
 }
 
-function filterContacts(contacts) {
+function filterContacts(contacts: Array<Contact>, searchcriteria: gs.contact.IContactSearchcriteria): {matching: Array<Contact>, remaining: Array<Contact>} {
 
-	let filteredContacts = [],
-		remainingContacts = [];
+	let matchingContacts: Array<Contact> = [],
+		remainingContacts: Array<Contact> = [];
 
-	contacts.forEach(function(contact) {
-		console.debug('searchcriteria.gender:', searchcriteria.gender);
-		console.debug('contact.gender:', contact.gender);
+	contacts.forEach((contact: Contact) => {
 		if (!searchcriteria.gender || searchcriteria.gender == contact.gender) {
-			filteredContacts.push(contact);
+			matchingContacts.push(contact);
 		} else {
 			remainingContacts.push(contact);
 		}
 	});
 
-	addToTable('filtered', filteredContacts);
-	addToTable('remaining', remainingContacts);
+	return {
+		matching: matchingContacts,
+		remaining: remainingContacts
+	};
 }
 
-function addToTable(type, contacts) {
-	let tbodyElem;
+function addToTable(type: 'MATCHING' | 'REMAINING', contacts: Array<Contact>) {
+	let tbodyElem: JQuery;
 
-	if (type === 'filtered') {
-		tbodyElem = $('.gs-filtered-results > table > tbody');
-	} else if (type === 'remaining') {
+	if (type === 'MATCHING') {
+		tbodyElem = $('.gs-matching-results > table > tbody');
+	} else if (type === 'REMAINING') {
 		tbodyElem = $('.gs-remaining-results > table > tbody');
 	}
 
 	tbodyElem.empty();
 
-	contacts.forEach(function(contact) {
+	contacts.forEach((contact: Contact) => {
 		tbodyElem.append(
 			`<tr>
 				<td>${[contact.firstName, contact.lastName].join(' ')}</td>
@@ -74,16 +71,45 @@ function addToTable(type, contacts) {
 	});
 }
 
-function registerFilters() {
-	$('.gs-filter-gender select').change(function() {
-		searchcriteria.gender = $(this).val() || null;
-		filterContacts(contacts);
+function registerFilterHandlers() {
+	$('.gs-filter-gender select').change((event) => {
+		searchcriteria.gender = <gs.contact.Gender>$(event.target).val() || null;
+
+		let filteredContacts = filterContacts(contacts, searchcriteria);
+
+		addToTable('MATCHING', filteredContacts.matching);
+		addToTable('REMAINING', filteredContacts.remaining);
 	});
 }
 
-function sanitizeDiscrictFilter(contacts) {
+function sanitizeDiscrictFilter(contacts: Array<Contact>) {
 	// @stub
 	// analyze contacts and build an array of available disctricts, put it into
 	// searchcriteria.availableDistricts
 	// and sanitize the options
+
+	let districts: Array<string> = contacts
+		.reduce((districts: Array<string>, contact: Contact) => {
+			districts.push(contact.district);
+			return districts;
+		}, [])
+		.filter((district: string, index: number, availableDisctricts: Array<string>) => {
+			return availableDisctricts.indexOf(district) === index
+		})
+		.sort((d1: string, d2: string) => {
+			if (d1.toLowerCase() < d2.toLowerCase()) {
+				return -1;
+			} else  if (d1.toLowerCase() > d2.toLowerCase()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+	console.debug('districts:', districts);
+
+	districts.forEach((district: string) => {
+		// @stub
+		// push to .gs-filter-discrict > select
+	});
+
 }

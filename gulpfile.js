@@ -71,6 +71,8 @@ gulp.task('scss:watch', function() {
 	gulp.watch('src/scss/**/*.scss', ['scss']);
 });
 
+//////////////////////////////////////////////////////
+// main scripts
+//////////////////////////////////////////////////////
 gulp.task('default', ['html', 'ts', 'json', 'scss']);
-
 gulp.task('watch', ['html:watch', 'ts:watch', 'json:watch', 'scss:watch']);
