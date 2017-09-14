@@ -1,0 +1,16 @@
+{
+  "name": "gs-funke-candidate-test",
+  "version": "0.0.1",
+  "description": "The candidate Test for applying at Funke Digital.",
+  "main": "index.js",
+  "repository": "git@github.com:GregorSondermeier/funke-candidate-test.git",
+  "author": "GregorSondermeier <gregor.sondermeier.github@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-ejs": "^3.0.1",
+    "gulp-typescript": "^3.2.2",
+    "typescript": "^2.5.2"
+  }
+}
