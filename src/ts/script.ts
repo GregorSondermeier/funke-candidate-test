@@ -20,7 +20,7 @@ function loadContacts(): void {
 		url: './json/contacts.json'
 	}).then((data: Array<gs.contact.IContact>) => {
 		contacts = data.map((contact: gs.contact.IContact) => new Contact(contact));
-		sanitizeDiscrictFilter(contacts);
+		sanitizeDiscrictOptions(contacts);
 
 		let filteredContacts = filterContacts(contacts, searchcriteria);
 
@@ -72,7 +72,7 @@ function addToTable(type: 'MATCHING' | 'REMAINING', contacts: Array<Contact>) {
 }
 
 function registerFilterHandlers() {
-	$('.gs-filter-gender select').change((event) => {
+	$('.gs-filter-gender > select').change((event) => {
 		searchcriteria.gender = <gs.contact.Gender>$(event.target).val() || null;
 
 		let filteredContacts = filterContacts(contacts, searchcriteria);
@@ -82,12 +82,7 @@ function registerFilterHandlers() {
 	});
 }
 
-function sanitizeDiscrictFilter(contacts: Array<Contact>) {
-	// @stub
-	// analyze contacts and build an array of available disctricts, put it into
-	// searchcriteria.availableDistricts
-	// and sanitize the options
-
+function sanitizeDiscrictOptions(contacts: Array<Contact>) {
 	let districts: Array<string> = contacts
 		.reduce((districts: Array<string>, contact: Contact) => {
 			districts.push(contact.district);
@@ -105,11 +100,14 @@ function sanitizeDiscrictFilter(contacts: Array<Contact>) {
 				return 0;
 			}
 		});
-	console.debug('districts:', districts);
+
+	let selectElem: JQuery = $('.gs-filter-discrict > select');
 
 	districts.forEach((district: string) => {
-		// @stub
-		// push to .gs-filter-discrict > select
+		let option: HTMLOptionElement = document.createElement('option');
+		option.text = district;
+		option.value = district;
+		selectElem.append(option);
 	});
 
 }
