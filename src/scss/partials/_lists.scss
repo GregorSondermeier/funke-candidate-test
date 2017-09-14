@@ -27,4 +27,13 @@
 		text-align: left;
 		background: $color-dimgrey;
 	}
+
+	@media (max-width: 980px) {
+		.col-6.gs-matching-results {
+			width: calc(100% - #{4 * $spacer});
+		}
+		.col-6.gs-remaining-results {
+			display: none;
+		}
+	}
 }
