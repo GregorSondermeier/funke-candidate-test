@@ -2,4 +2,4 @@
 
 * run `yarn`
 * run `gulp`
-* view `target/index.html` on a webserver
+* put `target/` on a webserver and view `index.html` (e.g. for apache2: `ln -s target /var/www/html/funke-candidate-test`)
