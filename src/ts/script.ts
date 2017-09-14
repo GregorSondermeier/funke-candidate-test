@@ -1,87 +1,45 @@
 import * as $ from "jquery";
 import {Contact} from './_models/Contact';
 
-$(() => {
-	loadContacts();
-	registerFilterHandlers();
-});
-
-let contacts: Array<Contact>;
+//////////////////////////////////////////////////////
+//					  variables						//
+//////////////////////////////////////////////////////
+let allContacts: Array<Contact>,
+	matchingContacts: Array<Contact>,
+	remainingContacts: Array<Contact>;
 
 let searchcriteria: gs.contact.IContactSearchcriteria = {
 	gender: null,
-	availableDistricts: [],
 	district: null
 };
 
-function loadContacts(): void {
-	$.ajax({
+//////////////////////////////////////////////////////
+//					  bootstrap						//
+//////////////////////////////////////////////////////
+$(() => {
+	loadContacts().then((data: Array<gs.contact.IContact>) => {
+		allContacts = data.map((contact: gs.contact.IContact) => new Contact(contact));
+		sanitizeDiscrictOptions(allContacts);
+
+		filterContacts(allContacts, searchcriteria);
+		updateView();
+	});
+	registerFilterHandlers();
+});
+
+//////////////////////////////////////////////////////
+//					  api calls						//
+//////////////////////////////////////////////////////
+function loadContacts(): JQueryXHR {
+	return $.ajax({
 		method: 'GET',
 		url: './json/contacts.json'
-	}).then((data: Array<gs.contact.IContact>) => {
-		contacts = data.map((contact: gs.contact.IContact) => new Contact(contact));
-		sanitizeDiscrictOptions(contacts);
-
-		let filteredContacts = filterContacts(contacts, searchcriteria);
-
-		addToTable('MATCHING', filteredContacts.matching);
-		addToTable('REMAINING', filteredContacts.remaining);
 	});
 }
 
-function filterContacts(contacts: Array<Contact>, searchcriteria: gs.contact.IContactSearchcriteria): {matching: Array<Contact>, remaining: Array<Contact>} {
-
-	let matchingContacts: Array<Contact> = [],
-		remainingContacts: Array<Contact> = [];
-
-	contacts.forEach((contact: Contact) => {
-		if (!searchcriteria.gender || searchcriteria.gender == contact.gender) {
-			matchingContacts.push(contact);
-		} else {
-			remainingContacts.push(contact);
-		}
-	});
-
-	return {
-		matching: matchingContacts,
-		remaining: remainingContacts
-	};
-}
-
-function addToTable(type: 'MATCHING' | 'REMAINING', contacts: Array<Contact>) {
-	let tbodyElem: JQuery;
-
-	if (type === 'MATCHING') {
-		tbodyElem = $('.gs-matching-results > table > tbody');
-	} else if (type === 'REMAINING') {
-		tbodyElem = $('.gs-remaining-results > table > tbody');
-	}
-
-	tbodyElem.empty();
-
-	contacts.forEach((contact: Contact) => {
-		tbodyElem.append(
-			`<tr>
-				<td>${[contact.firstName, contact.lastName].join(' ')}</td>
-				<td><a href="tel:${contact.phone}">${contact.phone}</a></td>
-				<td>${contact.city}</td>
-				<td>${contact.district}</td>
-			</tr>`
-		);
-	});
-}
-
-function registerFilterHandlers() {
-	$('.gs-filter-gender > select').change((event) => {
-		searchcriteria.gender = <gs.contact.Gender>$(event.target).val() || null;
-
-		let filteredContacts = filterContacts(contacts, searchcriteria);
-
-		addToTable('MATCHING', filteredContacts.matching);
-		addToTable('REMAINING', filteredContacts.remaining);
-	});
-}
-
+//////////////////////////////////////////////////////
+//					business logic					//
+//////////////////////////////////////////////////////
 function sanitizeDiscrictOptions(contacts: Array<Contact>) {
 	let districts: Array<string> = contacts
 		.reduce((districts: Array<string>, contact: Contact) => {
@@ -110,4 +68,67 @@ function sanitizeDiscrictOptions(contacts: Array<Contact>) {
 		selectElem.append(option);
 	});
 
+}
+
+function filterContacts(contacts: Array<Contact>, searchcriteria: gs.contact.IContactSearchcriteria): void {
+
+	matchingContacts = [];
+	remainingContacts = [];
+
+	contacts.forEach((contact: Contact) => {
+		if (
+			(!searchcriteria.gender || searchcriteria.gender == contact.gender) &&
+			(!searchcriteria.district || searchcriteria.district == contact.district)
+		) {
+			matchingContacts.push(contact);
+		} else {
+			remainingContacts.push(contact);
+		}
+	});
+}
+
+//////////////////////////////////////////////////////
+//						  dom						//
+//////////////////////////////////////////////////////
+function registerFilterHandlers() {
+	$('.gs-filter-gender > select').change((event) => {
+		searchcriteria.gender = <gs.contact.Gender>$(event.target).val() || null;
+
+		filterContacts(allContacts, searchcriteria);
+		updateView();
+	});
+	$('.gs-filter-discrict > select').change((event) => {
+		searchcriteria.district = <string>$(event.target).val() || null;
+
+		filterContacts(allContacts, searchcriteria);
+		updateView();
+	});
+}
+
+function updateView() {
+	addToTable('MATCHING', matchingContacts);
+	addToTable('REMAINING', remainingContacts);
+}
+
+function addToTable(type: 'MATCHING' | 'REMAINING', contacts: Array<Contact>) {
+	let tbodyElem: JQuery;
+
+	if (type === 'MATCHING') {
+		tbodyElem = $('.gs-matching-results > table > tbody');
+	} else if (type === 'REMAINING') {
+		tbodyElem = $('.gs-remaining-results > table > tbody');
+	}
+
+	tbodyElem.empty();
+
+	contacts.forEach((contact: Contact) => {
+		tbodyElem.append(
+			`<tr>
+				<td>${[contact.firstName, contact.lastName].join(' ')}</td>
+				<td><a href="tel:${contact.phone}">${contact.phone}</a></td>
+				<td>${contact.city}</td>
+				<td>${contact.district}</td>
+			</tr>`
+		);
+	});
 }
