@@ -1,21 +1,20 @@
 var gulp = require('gulp'),
 	ejs = require('gulp-ejs'),
-	// ts = require('gulp-typescript'),
-	concat = require('gulp-concat'),
-	// rename = require('gulp-rename'),
-	// uglify = require('gulp-uglify'),
-	// gulpCopy = require('gulp-copy'),
+	browserify = require('browserify'),
+	tslint = require('gulp-tslint'),
+	tsify = require('tsify'),
+	source = require('vinyl-source-stream'),
 	sass = require('gulp-sass');
 
 //////////////////////////////////////////////////////
 // html
 //////////////////////////////////////////////////////
 gulp.task('html', function() {
-	gulp.src("src/*.ejs")
+	gulp.src('src/*.ejs')
 		.pipe(ejs({
-			msg: "Hello Gulp!"
+			msg: 'Hello Gulp!'
 		}, undefined, {ext: ''}))
-		.pipe(gulp.dest("target"));
+		.pipe(gulp.dest('target'));
 });
 
 gulp.task('html:watch', function() {
@@ -23,34 +22,28 @@ gulp.task('html:watch', function() {
 });
 
 //////////////////////////////////////////////////////
-// javascript
-//////////////////////////////////////////////////////
-gulp.task('js', function() {
-	return gulp
-		.src('src/js/**/*.js')
-		.pipe(concat('script.js'))
-		.pipe(gulp.dest('target/js'));
-});
-
-gulp.task('js:watch', function() {
-	gulp.watch('src/js/**/*.js', ['js']);
-});
-
-//////////////////////////////////////////////////////
 // typescript
+// inspired by http://www.vrdmn.com/2016/07/getting-started-with-typescript.html
 //////////////////////////////////////////////////////
-// var tsProject = ts.createProject('tsconfig.json');
-// gulp.task('ts', function () {
-// 	return gulp.src('src/**/*.ts')
-// 		.pipe(gulp.dest('target/js'))
-// 		.pipe(tsProject('tsconfig.json', {
-// 			noImplicitAny: true,
-// 			outFile: 'script.js'
-// 		}));
-// });
-// gulp.task('ts:watch', function() {
-// 	gulp.watch('src/**/*.ts', ['ts']);
-// });
+gulp.task('lint-ts', function () {
+	return gulp.src('src/ts/**/*.ts')
+		.pipe(tslint({
+			formatter: 'verbose'
+		}))
+		.pipe(tslint.report());
+});
+gulp.task('ts', ['lint-ts'], function () {
+	return browserify({
+		entries: ['src/ts/script.ts']
+	})
+	.plugin(tsify)
+	.bundle()
+	.pipe(source('script.js'))
+	.pipe(gulp.dest('target/js'));
+});
+gulp.task('ts:watch', function() {
+	gulp.watch('src/ts/**/*.ts', ['ts']);
+});
 
 //////////////////////////////////////////////////////
 // json
@@ -78,6 +71,6 @@ gulp.task('scss:watch', function() {
 	gulp.watch('src/scss/**/*.scss', ['scss']);
 });
 
-gulp.task('default', ['html', 'js', 'json', 'scss']);
+gulp.task('default', ['html', 'ts', 'json', 'scss']);
 
-gulp.task('watch', ['html:watch', 'js:watch', 'json:watch', 'scss:watch']);
+gulp.task('watch', ['html:watch', 'ts:watch', 'json:watch', 'scss:watch']);

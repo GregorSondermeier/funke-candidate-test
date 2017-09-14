@@ -7,18 +7,20 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "jQuery": "^1.7.4"
+    "jquery": "3.2.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.2.12",
+    "browserify": "^14.4.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-copy": "^1.0.1",
     "gulp-ejs": "^3.0.1",
-    "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
+    "gulp-tslint": "^8.1.2",
     "gulp-typescript": "^3.2.2",
-    "gulp-uglify": "^3.0.0",
-    "typescript": "^2.5.2"
+    "tsify": "^3.0.3",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

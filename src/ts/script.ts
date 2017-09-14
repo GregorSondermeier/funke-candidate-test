@@ -1,4 +1,6 @@
-$(window).load(function() {
+import {Contact} from './_models/Contact';
+
+$().ready(() => {
 	loadContacts();
 	registerFilters();
 });
@@ -6,12 +8,12 @@ $(window).load(function() {
 /**
  * @type {Array<Contact>}
  */
-var contacts;
+let contacts;
 
 /**
  * @type {{gender: string, district: string}}
  */
-var searchcriteria = {
+let searchcriteria = {
 	gender: null,
 	availableDistricts: [],
 	district: null
@@ -32,7 +34,7 @@ function loadContacts() {
 
 function filterContacts(contacts) {
 
-	var filteredContacts = [],
+	let filteredContacts = [],
 		remainingContacts = [];
 
 	contacts.forEach(function(contact) {
@@ -50,7 +52,7 @@ function filterContacts(contacts) {
 }
 
 function addToTable(type, contacts) {
-	var tbodyElem;
+	let tbodyElem;
 
 	if (type === 'filtered') {
 		tbodyElem = $('.gs-filtered-results > table > tbody');
@@ -61,14 +63,14 @@ function addToTable(type, contacts) {
 	tbodyElem.empty();
 
 	contacts.forEach(function(contact) {
-		tbodyElem.append($(
-			'<tr>' +
-			'<td>' + [contact.firstName, contact.lastName].join(' ') + '</td>' +
-			'<td><a href="tel:' + contact.phone + '">' + contact.phone + '</a></td>' +
-			'<td>' + contact.city + '</td>' +
-			'<td>' + contact.district + '</td>',
-			'</tr>'
-		));
+		tbodyElem.append(
+			`<tr>
+				<td>${[contact.firstName, contact.lastName].join(' ')}</td>
+				<td><a href="tel:${contact.phone}">${contact.phone}</a></td>
+				<td>${contact.city}</td>
+				<td>${contact.district}</td>
+			</tr>`
+		);
 	});
 }
 
