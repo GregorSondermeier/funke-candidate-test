@@ -132,3 +132,7 @@ function addToTable(type: 'MATCHING' | 'REMAINING', contacts: Array<Contact>) {
 		);
 	});
 }
+
+function foo(bar: string) {
+	console.debug(bar);
+}
